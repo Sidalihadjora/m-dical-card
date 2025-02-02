@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقة حالتي الصحية</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script> <!-- مكتبة QR -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* صندوق البطاقة */
+        .card-container {
+            width: 500px;
+            height: 300px;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        /* البطاقة */
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        /* عند النقر، تدور البطاقة */
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        @media (max-width: 400px) {
+            body{
+                overflow: hidden;
+            }
+            .card {
+                width: 500px;
+                rotate: 90deg;
+            }
+            /* Flip the card on the Y-axis */
+            .card.flipped {
+                transform: rotateX(180deg);
+            }
+        }
+
+        /* الوجه الأمامي والخلفي */
+        .card-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* الوجه الأمامي */
+        .card-front {
+            background: linear-gradient(135deg, #ffffff, #f9f9f9);
+        }
+
+        /* الوجه الخلفي */
+        .card-back {
+            background: linear-gradient(135deg, #ffffff, #f9f9f9);
+            transform: rotateY(180deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* الهيدر */
+        .header {
+            width: 100%;
+            text-align: center;
+            position: relative;
+            margin-bottom: 20px; /* زيادة المسافة */
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .header h2 {
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* اللوقو */
+        .logo {
+            position: absolute;
+            top: -5px;
+            right: 10px;
+            width: 70px;
+            height: 70px;
+            background-image: url(logo.jpg);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            border-radius: 50%;
+        }
+
+        /* المحتوى */
+        .content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* صورة الشخص */
+        .photo {
+            width: 140px;
+            height: 140px;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            border: none;
+            position: absolute;
+            left:30px
+        }
+
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* المعلومات */
+        .information {
+            text-align: right;
+            flex: 1;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .information h3 {
+            font-size: 16px;
+            margin: 10px 0; /* زيادة المسافة بين الأسطر */
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* رمز QR محيط بالمعلومات */
+        .qr-overlay {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 180px;
+            height: 180px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-overlay canvas {
+            width: 150px;
+            height: 150px;
+        }
+
+        /* رمز QR الخلفي */
+        .qr-code-back {
+            width: 180px;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-code-back canvas {
+            width: 180px;
+            height: 180px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card-container" onclick="flipCard()">
+        <div class="card" id="card">
+            <!-- الوجه الأمامي -->
+            <div class="card-face card-front">
+                <div class="header">
+                    <div class="logo"></div> <!-- اللوقو -->
+                    <h1>بطاقة حالتي الصحية</h1>
+                    <h2>الجمهورية الجزائرية الديمقراطية الشعبية</h2>
+                </div>
+                <div class="content">
+                    <div class="photo">
+                        <img src="photo_profile.jpg" alt="صورة الشخص">
+                    </div>
+                    <div class="information">
+                        <h3>الاسم: سيدعلي</h3>
+                        <h3>اللقب: زراري</h3>
+                        <h3>تاريخ ومكان الميلاد: 21/12/2004 بسيدي علي</h3>
+                        <h3>زمرة الدم: AB+</h3>
+                        <h3>الرقم التسجيل الصحي: 37283210</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الوجه الخلفي -->
+            <div class="card-face card-back">
+                <div class="qr-code-back">
+                    <canvas id="qrCanvasBack"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function flipCard() {
+            document.getElementById("card").classList.toggle("flipped");
+        }
+    
+        function generateQRCode(text, canvasId) {
+            let qr = new QRious({
+                element: document.getElementById(canvasId),
+                value: text,
+                size: 180,
+                background: 'white',
+                foreground: 'black'
+            });
+        }
+    
+        // بيانات الشخص
+        let userData = `Informations médicales :
+    État actuel : Bon.
+    Maladies chroniques : Douleurs articulaires / Hernie discale lombaire.
+    
+    Médicaments actuels : Ne prend actuellement aucun médicament.
+    
+    Allergies : Aucune allergie connue.
+    
+    Interventions chirurgicales :
+    - Opération du bec-de-lièvre.
+    - Opération de la hernie discale.
+    
+    Mode de vie :
+    - Travaille comme infirmier à l'hôpital.
+    - Ne pratique pas de sport.
+    - Ne suit pas un régime alimentaire équilibré.
+    
+    Antécédents familiaux : Aucun antécédent médical familial.
+    
+    Vaccinations : A reçu tous les vaccins requis.`;
+    
+        // إنشاء QR حول المعلومات وفي الخلف
+        generateQRCode(userData, "qrCanvasBack");
+    </script>
+
+</body>
+</html>
